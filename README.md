@@ -1,58 +1,41 @@
 # 📄 Document Formatter Pro
 
-A lightweight, web-based document editing and formatting tool designed to streamline document creation, live styling preview, local document management, and seamless PDF/Word exports.
+> **Note on Project Status:** This project is no longer being actively updated or maintained. It was built specifically as a hackathon submission.
 
 ---
 
-## 🏆 Project Background & Context
+## 🏆 Background & Context
 
-This project was developed in **October 2025** during my **2nd year of college** for an **Artificial Intelligence Learning-Based Hackathon** organized directly by our college. 
+This project was built in **October 2025** during my **2nd year of college** for an **Artificial Intelligence Learning-Based Hackathon** organized by our college. 
 
-* **Strict Requirement Adherence:** Built within a few days, strictly following the provided problem statement, test cases, and functional constraints.
-* **Problem Scope:** Solving real-time document previewing, local state persistence, clean multi-format export handling, and file parsing directly in the browser without server dependencies.
+The entire application was created in just a few days, strictly following all given problem statements, functional test cases, and project constraints. It was designed to solve common web editing challenges—such as live document formatting, local draft saving, and clean PDF/Word exports—entirely within the browser.
 
 ---
 
 ## ✨ Features
 
-- **📑 Interactive Editor Workspace:**
-  - Real-time word and character counters.
-  - Built-in file reader supporting `.txt` and `.md` file imports.
-- **🎨 Live Styled Preview Page:**
-  - Dynamic paper-like document rendering.
-  - Preset document templates (*Professional Resume*, *Business Letter*, *Project Report*) with tailored font family, line height, font size, and text alignment rules.
-- **💾 Local Document Management:**
-  - Save and store drafts directly in the browser's `localStorage`.
-  - Open, reload, or delete saved drafts seamlessly with real-time status updates.
-- **🖨️ Clean Export Capabilities:**
-  - **Export as PDF:** Clean print window isolation to prevent browser UI or webpage elements from appearing in exported PDFs.
-  - **Export as Word (.doc):** Direct client-side `.doc` generation using Blob binary streams.
+- **📑 Interactive Editor:** Write or upload text files (`.txt`, `.md`) with an live word and character counter.
+- **🎨 Real-Time Document Preview:** Switch to the preview tab to see how your text looks on a simulated formatted page.
+- **📐 Built-In Style Templates:** Choose from pre-made document styles like *Professional Resume*, *Business Letter*, or *Project Report*.
+- **💾 Save & Load Drafts:** Store your documents directly in your browser so you don't lose your work when refreshing.
+- **🖨️ Export Options:** Export your document clean and formatted as a **PDF** or a **Word (.doc)** file without webpage buttons or UI getting in the way.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack (Beginner-Friendly)
 
-- **Frontend Core:** HTML5, Plain JavaScript (Vanilla ES6+)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/) (via CDN)
-- **Browser APIs Used:**
-  - `localStorage` API for document persistence.
-  - `FileReader` API for importing local `.txt`/`.md` files.
-  - `Blob` & `URL.createObjectURL` for client-side Word document downloads.
-  - `window.print()` API for PDF rendering.
+This app was built using simple, standard web development tools without any complex frameworks or backend servers:
+
+- **HTML5:** Creates the basic structure and layout of the webpage.
+- **Tailwind CSS:** A beginner-friendly styling library that handles colors, fonts, spacing, and responsive design using utility classes.
+- **Vanilla JavaScript (JS):** Handles all the app logic and interactivity, including:
+  - Reading uploaded text files directly from your computer.
+  - Saving your drafts inside your web browser's local memory (`localStorage`).
+  - Formatting and previewing text dynamically in real time.
+  - Triggering clean printable views for PDF creation and generating standard `.doc` download files.
 
 ---
 
-## 🚀 Getting Started
+## 📜 License
 
-Since this project is built entirely on client-side web technologies, no complex node package installations or server setups are required.
-
-### Prerequisites
-- Any modern web browser (Google Chrome, Mozilla Firefox, Microsoft Edge, Safari).
-- (Optional) [Live Server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) for VS Code.
-
-### Installation & Execution
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/YOUR_USERNAME/document-formatter-pro.git](https://github.com/YOUR_USERNAME/document-formatter-pro.git)
-   cd document-formatter-pro
+Distributed under the MIT License.
