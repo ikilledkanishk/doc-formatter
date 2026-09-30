@@ -1,3 +1,4 @@
+![CI](https://github.com/ikilledkanishk/2d-Runner-Game/actions/workflows/ci.yml/badge.svg)
 # 📄 Document Formatter Pro
 
 > **Note on Project Status:** This project is no longer being actively updated or maintained. It was built specifically as a hackathon submission.
