@@ -36,7 +36,3 @@ This app was built using simple, standard web development tools without any comp
   - Triggering clean printable views for PDF creation and generating standard `.doc` download files.
 
 ---
-
-## 📜 License
-
-Distributed under the MIT License.
