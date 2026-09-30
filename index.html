@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Formatter Pro</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="p-2 bg-indigo-600 rounded-lg text-white font-bold">📄</div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-900 leading-none">Document Formatter Pro</h1>
+          <span id="saveStatus" class="text-xs text-slate-400">Editing local draft</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button onclick="createNewDocument()" class="px-3.5 py-2 text-sm font-medium bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200">+ New</button>
+        <button onclick="saveDocument()" class="px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Save</button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="border-t border-slate-200 bg-white">
+      <div class="max-w-7xl mx-auto px-4 flex space-x-4">
+        <button onclick="switchTab('edit')" id="tab-edit" class="tab-btn px-4 py-3 text-sm font-medium border-b-2 border-indigo-600 text-indigo-600">Edit Content</button>
+        <button onclick="switchTab('preview')" id="tab-preview" class="tab-btn px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-600">Preview Page</button>
+        <button onclick="switchTab('documents')" id="tab-documents" class="tab-btn px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-600">Saved Documents</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Workspace -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+    
+    <!-- EDIT TAB -->
+    <div id="view-edit" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-6 space-y-4 shadow-sm">
+          <div>
+            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Document Title</label>
+            <input type="text" id="docTitle" value="Untitled Document" class="w-full px-3.5 py-2 border border-slate-200 rounded-lg font-medium outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="block text-xs font-semibold uppercase text-slate-500">Editor Workspace</label>
+              <div class="flex items-center space-x-3">
+                <span id="counter" class="text-xs text-slate-400">0 words • 0 chars</span>
+                <label class="px-2.5 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded cursor-pointer hover:bg-slate-200 border border-slate-200">
+                  Upload File (.txt, .md)
+                  <input type="file" id="fileInput" accept=".txt,.md" class="hidden">
+                </label>
+              </div>
+            </div>
+            <textarea id="editor" placeholder="Type or paste your content here..." class="w-full h-[400px] p-4 font-mono text-sm border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="text-sm font-semibold uppercase text-slate-500 mb-3">Preset Templates</h3>
+          <div class="space-y-2">
+            <button onclick="setTemplate('resume')" id="tpl-resume" class="tpl-btn w-full p-3 text-left rounded-lg border border-indigo-600 bg-indigo-50/60 font-semibold text-sm text-indigo-900">Professional Resume</button>
+            <button onclick="setTemplate('businessLetter')" id="tpl-businessLetter" class="tpl-btn w-full p-3 text-left rounded-lg border border-slate-200 hover:bg-slate-50 font-semibold text-sm text-slate-800">Business Letter</button>
+            <button onclick="setTemplate('projectReport')" id="tpl-projectReport" class="tpl-btn w-full p-3 text-left rounded-lg border border-slate-200 hover:bg-slate-50 font-semibold text-sm text-slate-800">Project Report</button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-2.5">
+          <button onclick="exportPDF()" class="w-full py-2.5 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800">Export as PDF</button>
+          <button onclick="exportDOC()" class="w-full py-2.5 bg-white text-slate-700 text-sm font-medium border border-slate-300 rounded-lg hover:bg-slate-50">Export as Word (.doc)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREVIEW TAB -->
+    <div id="view-preview" class="hidden flex justify-center py-4">
+      <div id="paperPreview" class="bg-white p-12 shadow-xl border border-slate-200 min-h-[11in] w-[8.5in] transition-all">
+        <div id="previewHeader" class="border-b-2 border-slate-800 pb-3 mb-6">
+          <h1 id="previewTitle" class="text-2xl font-bold tracking-tight text-slate-900">Untitled Document</h1>
+        </div>
+        <div id="previewBody" class="leading-relaxed min-h-[7.5in] text-slate-800 space-y-3"></div>
+        <div class="border-t border-slate-300 pt-3 mt-8 text-center text-xs text-slate-400 flex justify-between">
+          <span id="previewFooterTitle">Untitled Document</span>
+          <span>Page 1</span>
+          <span id="previewDate"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOCUMENTS TAB -->
+    <div id="view-documents" class="hidden bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-slate-900">Saved Documents</h2>
+        <span id="docCount" class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">0 Documents</span>
+      </div>
+      <div id="documentsList" class="space-y-3"></div>
+    </div>
+  </main>
+
+  <script>
+    let currentDocId = null;
+    let selectedTemplate = 'resume';
+
+    const templates = {
+      resume: { fontFamily: 'Arial, sans-serif', fontSize: '11pt', lineHeight: '1.4', alignment: 'left', name: 'Professional Resume' },
+      businessLetter: { fontFamily: 'Times New Roman, serif', fontSize: '12pt', lineHeight: '1.6', alignment: 'left', name: 'Business Letter' },
+      projectReport: { fontFamily: 'Georgia, serif', fontSize: '12pt', lineHeight: '1.8', alignment: 'justify', name: 'Project Report' }
+    };
+
+    function escapeHtml(text) {
+      return (text || '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function switchTab(tabName) {
+      ['edit', 'preview', 'documents'].forEach(tab => {
+        document.getElementById('view-' + tab).classList.add('hidden');
+        document.getElementById('tab-' + tab).className = "tab-btn px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-slate-900";
+      });
+      document.getElementById('view-' + tabName).classList.remove('hidden');
+      document.getElementById('tab-' + tabName).className = "tab-btn px-4 py-3 text-sm font-medium border-b-2 border-indigo-600 text-indigo-600";
+
+      if (tabName === 'preview') updatePreview();
+      if (tabName === 'documents') renderDocuments();
+    }
+
+    document.getElementById('editor').addEventListener('input', (e) => {
+      const text = e.target.value;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      document.getElementById('counter').innerText = words + ' words • ' + text.length + ' chars';
+    });
+
+    document.getElementById('fileInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          document.getElementById('editor').value = evt.target.result;
+          document.getElementById('editor').dispatchEvent(new Event('input'));
+        };
+        reader.readAsText(file);
+      }
+    });
+
+    function setTemplate(tpl) {
+      selectedTemplate = tpl;
+      Object.keys(templates).forEach(key => {
+        const btn = document.getElementById('tpl-' + key);
+        if (key === tpl) {
+          btn.className = "tpl-btn w-full p-3 text-left rounded-lg border border-indigo-600 bg-indigo-50/60 font-semibold text-sm text-indigo-900";
+        } else {
+          btn.className = "tpl-btn w-full p-3 text-left rounded-lg border border-slate-200 hover:bg-slate-50 font-semibold text-sm text-slate-800";
+        }
+      });
+    }
+
+    function updatePreview() {
+      const title = document.getElementById('docTitle').value || 'Untitled Document';
+      const content = document.getElementById('editor').value;
+      const tpl = templates[selectedTemplate];
+
+      document.getElementById('previewTitle').innerText = title;
+      document.getElementById('previewFooterTitle').innerText = title;
+      document.getElementById('previewDate').innerText = new Date().toLocaleDateString();
+
+      const previewBody = document.getElementById('previewBody');
+      if (!content.trim()) {
+        previewBody.innerHTML = '\x3Cp class="text-slate-400 italic"\x3EStart typing in the editor tab to preview formatted content...\x3C/p\x3E';
+      } else {
+        previewBody.innerHTML = content
+          .split('\n')
+          .map(line => '\x3Cp class="mb-2"\x3E' + (escapeHtml(line) || '&nbsp;') + '\x3C/p\x3E')
+          .join('');
+      }
+
+      const paper = document.getElementById('paperPreview');
+      paper.style.fontFamily = tpl.fontFamily;
+      paper.style.fontSize = tpl.fontSize;
+      paper.style.lineHeight = tpl.lineHeight;
+      paper.style.textAlign = tpl.alignment;
+    }
+
+    function createNewDocument() {
+      document.getElementById('docTitle').value = 'Untitled Document';
+      document.getElementById('editor').value = '';
+      currentDocId = null;
+      document.getElementById('saveStatus').innerText = 'Editing local draft';
+      document.getElementById('editor').dispatchEvent(new Event('input'));
+      switchTab('edit');
+    }
+
+    function saveDocument() {
+      const doc = {
+        id: currentDocId || Date.now(),
+        title: document.getElementById('docTitle').value || 'Untitled Document',
+        content: document.getElementById('editor').value,
+        template: selectedTemplate,
+        lastModified: new Date().toISOString()
+      };
+
+      let docs = JSON.parse(localStorage.getItem('vanillaDocs') || '[]');
+      docs = docs.filter(d => String(d.id) !== String(doc.id));
+      docs.unshift(doc);
+      localStorage.setItem('vanillaDocs', JSON.stringify(docs));
+      currentDocId = doc.id;
+
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('saveStatus').innerText = 'Saved at ' + timeStr;
+    }
+
+    function renderDocuments() {
+      const docs = JSON.parse(localStorage.getItem('vanillaDocs') || '[]');
+      const container = document.getElementById('documentsList');
+      document.getElementById('docCount').innerText = docs.length + ' Saved';
+
+      if (!docs.length) {
+        container.innerHTML = '\x3Cdiv class="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl"\x3E' +
+          '\x3Cp class="text-slate-500 font-medium"\x3ENo saved documents yet.\x3C/p\x3E' +
+          '\x3Cp class="text-xs text-slate-400 mt-1"\x3EClick "Save" while working to store your files here.\x3C/p\x3E' +
+          '\x3C/div\x3E';
+        return;
+      }
+
+      container.innerHTML = docs.map(d => 
+        '\x3Cdiv class="p-4 border border-slate-200 rounded-lg flex justify-between items-center bg-slate-50/50 hover:border-slate-300 transition-all"\x3E' +
+          '\x3Cdiv\x3E' +
+            '\x3Cdiv class="font-semibold text-slate-800 text-sm"\x3E' + escapeHtml(d.title) + '\x3C/div\x3E' +
+            '\x3Cdiv class="text-xs text-slate-400 mt-0.5"\x3E' +
+              'Modified: ' + new Date(d.lastModified).toLocaleDateString() + ' ' + new Date(d.lastModified).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' • ' +
+              '\x3Cspan class="font-medium text-slate-600"\x3E' + (templates[d.template]?.name || 'Standard') + '\x3C/span\x3E' +
+            '\x3C/div\x3E' +
+          '\x3C/div\x3E' +
+          '\x3Cdiv class="flex items-center space-x-2"\x3E' +
+            '\x3Cbutton onclick="loadDoc(' + d.id + ')" class="px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium rounded hover:bg-indigo-700 transition-colors"\x3EOpen\x3C/button\x3E' +
+            '\x3Cbutton onclick="deleteDoc(' + d.id + ')" class="px-2.5 py-1.5 bg-white text-red-600 border border-slate-200 text-xs font-medium rounded hover:bg-red-50 transition-colors"\x3EDelete\x3C/button\x3E' +
+          '\x3C/div\x3E' +
+        '\x3C/div\x3E'
+      ).join('');
+    }
+
+    function loadDoc(id) {
+      const docs = JSON.parse(localStorage.getItem('vanillaDocs') || '[]');
+      const doc = docs.find(d => String(d.id) === String(id));
+      if (doc) {
+        document.getElementById('docTitle').value = doc.title;
+        document.getElementById('editor').value = doc.content;
+        setTemplate(doc.template || 'resume');
+        currentDocId = doc.id;
+        document.getElementById('saveStatus').innerText = 'Loaded from storage';
+        document.getElementById('editor').dispatchEvent(new Event('input'));
+        switchTab('edit');
+      }
+    }
+
+    function deleteDoc(id) {
+      let docs = JSON.parse(localStorage.getItem('vanillaDocs') || '[]');
+      docs = docs.filter(d => String(d.id) !== String(id));
+      localStorage.setItem('vanillaDocs', JSON.stringify(docs));
+      if (String(currentDocId) === String(id)) {
+        createNewDocument();
+      } else {
+        renderDocuments();
+      }
+    }
+
+    function exportPDF() {
+      const title = document.getElementById('docTitle').value || 'Untitled Document';
+      const content = document.getElementById('editor').value;
+      const tpl = templates[selectedTemplate];
+
+      const printWindow = window.open('', '', 'width=800,height=900');
+      if (!printWindow) return;
+
+      const formattedContent = content
+        .split('\n')
+        .map(line => '\x3Cp\x3E' + (escapeHtml(line) || '&nbsp;') + '\x3C/p\x3E')
+        .join('');
+
+      const htmlContent = '\x3C!DOCTYPE html\x3E\x3Chtml\x3E\x3Chead\x3E\x3Ctitle\x3E' + escapeHtml(title) + '\x3C/title\x3E' +
+        '\x3Cstyle\x3E' +
+        '@page { margin: 1in; } ' +
+        'body { font-family: ' + tpl.fontFamily + '; font-size: ' + tpl.fontSize + '; line-height: ' + tpl.lineHeight + '; text-align: ' + tpl.alignment + '; margin: 0; color: #1a1a1a; } ' +
+        'h1 { font-size: 18pt; margin-bottom: 12px; font-weight: bold; border-bottom: 2px solid #333; padding-bottom: 8px; } ' +
+        'p { margin-top: 0; margin-bottom: 8px; }' +
+        '\x3C/style\x3E\x3C/head\x3E\x3Cbody\x3E' +
+        '\x3Ch1\x3E' + escapeHtml(title) + '\x3C/h1\x3E' +
+        formattedContent +
+        '\x3C/body\x3E\x3C/html\x3E';
+
+      printWindow.document.write(htmlContent);
+      printWindow.document.close();
+      setTimeout(() => {
+        printWindow.focus();
+        printWindow.print();
+      }, 250);
+    }
+
+    function exportDOC() {
+      const content = document.getElementById('editor').value;
+      const title = document.getElementById('docTitle').value || 'Untitled Document';
+      const tpl = templates[selectedTemplate];
+
+      const formattedContent = content
+        .split('\n')
+        .map(line => '\x3Cp\x3E' + (escapeHtml(line) || '&nbsp;') + '\x3C/p\x3E')
+        .join('');
+
+      const docContent = '\x3Chtml xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"\x3E' +
+        '\x3Chead\x3E\x3Cmeta charset="utf-8"\x3E\x3Ctitle\x3E' + escapeHtml(title) + '\x3C/title\x3E' +
+        '\x3Cstyle\x3E' +
+        'body { font-family: ' + tpl.fontFamily + '; font-size: ' + tpl.fontSize + '; line-height: ' + tpl.lineHeight + '; text-align: ' + tpl.alignment + '; } ' +
+        'h1 { font-size: 18pt; font-weight: bold; } ' +
+        'p { margin-bottom: 8px; }' +
+        '\x3C/style\x3E\x3C/head\x3E\x3Cbody\x3E' +
+        '\x3Ch1\x3E' + escapeHtml(title) + '\x3C/h1\x3E\x3Chr\x3E' +
+        formattedContent +
+        '\x3C/body\x3E\x3C/html\x3E';
+
+      const blob = new Blob(['\ufeff', docContent], { type: 'application/msword' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = title + '.doc';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>
