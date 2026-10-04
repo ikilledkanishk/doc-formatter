@@ -1,5 +1,5 @@
 
-# 📄 Document Formatter Pro
+# 📄 Document Formatter 
 
 > **Note on Project Status:** This project is no longer being actively updated or maintained. It was built specifically as a hackathon submission.
 
@@ -23,7 +23,7 @@ The entire application was created in just a few days, strictly following all gi
 
 ---
 
-## 🛠️ Tech Stack (Beginner-Friendly)
+## 🛠️ Tech Stack 
 
 This app was built using simple, standard web development tools without any complex frameworks or backend servers:
 
